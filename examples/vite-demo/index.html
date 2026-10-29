@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StellarDS demo</title>
+    <style>
+      :root { color-scheme: light dark; font-family: system-ui, sans-serif; }
+      body { margin: 0 auto; max-width: 1100px; padding: 16px; }
+      .layout { display: grid; grid-template-columns: minmax(160px, 240px) 1fr; gap: 16px; }
+      @media (max-width: 640px) { .layout { grid-template-columns: 1fr; } }
+      ul { list-style: none; margin: 0; padding: 0; }
+      li button { width: 100%; text-align: left; padding: 6px 8px; margin: 2px 0; cursor: pointer; }
+      li button[aria-current='true'] { font-weight: 600; }
+      .table-wrap { overflow-x: auto; }
+      table { border-collapse: collapse; width: 100%; font-size: 14px; }
+      th, td { border-bottom: 1px solid #8884; padding: 4px 8px; text-align: left; white-space: nowrap; }
+      .error { color: #c33; white-space: pre-wrap; }
+      .muted { opacity: 0.7; }
+    </style>
+  </head>
+  <body>
+    <h1>StellarDS demo</h1>
+    <p id="status" class="muted">Loading…</p>
+    <div class="layout">
+      <nav><h2>Tables</h2><ul id="tables"></ul></nav>
+      <section>
+        <h2 id="title">Records</h2>
+        <div class="table-wrap" id="records"></div>
+        <p><button id="more" hidden>Load more</button></p>
+      </section>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

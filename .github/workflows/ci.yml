@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [18, 20, 22]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - name: Smoke-test the built package
+        run: |
+          node -e "const s=require('./dist/index.cjs'); if (typeof s.StellarDS !== 'function') process.exit(1)"
+          node --input-type=module -e "import { StellarDS } from './dist/index.js'; if (typeof StellarDS !== 'function') process.exit(1)"
+          node -e "const vm=require('vm');const c={TextEncoder,TextDecoder};vm.createContext(c);vm.runInContext(require('fs').readFileSync('dist/stellards.global.min.js','utf8'),c);if(typeof c.StellarDS!=='function'||typeof c.StellarDS.where!=='function')process.exit(1)"
+      - name: Build the Vite demo against the local package
+        if: matrix.node == 22
+        working-directory: examples/vite-demo
+        run: |
+          npm ci --no-audit --no-fund
+          npm run build

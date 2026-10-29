@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StellarDS script tag</title>
+    <!--
+      The script-tag build exposes one global, StellarDS. From npm/CDN:
+        <script src="https://cdn.jsdelivr.net/npm/stellards_typescript_sdk@2/dist/stellards.global.min.js"></script>
+      Locally, after `npm run build` in the repo root, this page loads ../dist/stellards.global.min.js.
+      Paste a token only for local testing: never ship a page with an access token in it. Use OAuth for public apps.
+    -->
+    <script src="../dist/stellards.global.min.js"></script>
+    <style>
+      body { font-family: system-ui, sans-serif; max-width: 900px; margin: 0 auto; padding: 16px; }
+      label { display: block; margin: 8px 0; }
+      input { width: 100%; max-width: 420px; }
+      pre { background: #8881; padding: 8px; overflow-x: auto; }
+    </style>
+  </head>
+  <body>
+    <h1>StellarDS from a script tag</h1>
+    <label>Access token <input id="token" type="password" autocomplete="off" /></label>
+    <label>Project id <input id="project" /></label>
+    <button id="go">List tables and first records</button>
+    <pre id="out"></pre>
+    <script>
+      document.getElementById('go').addEventListener('click', async function () {
+        var out = document.getElementById('out');
+        out.textContent = 'Loading...';
+        var client = new StellarDS({
+          accessToken: document.getElementById('token').value,
+          project: document.getElementById('project').value,
+        });
+        try {
+          var tables = await client.tables.list();
+          var lines = ['Tables: ' + tables.map(function (t) { return t.name + ' (' + t.id + ')'; }).join(', ')];
+          if (tables.length) {
+            var page = await client.records.query(tables[0].id, { take: 10, sort: StellarDS.asc('id') });
+            lines.push(tables[0].name + ': ' + page.count + ' records, first ' + page.data.length + ':');
+            lines.push(JSON.stringify(page.data, null, 2));
+          }
+          out.textContent = lines.join('\n');
+        } catch (e) {
+          out.textContent = e instanceof StellarDS.StellarDsError ? e.message + ' (HTTP ' + e.status + ')' : String(e);
+        }
+      });
+    </script>
+  </body>
+</html>
