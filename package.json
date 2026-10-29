@@ -1,38 +1,67 @@
 {
-    "name": "stellards_typescript_sdk",
-    "version": "1.0.20",
-    "description": "Typescript sdk for StellarDS",
-    "author": "TMSSoftware",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/Stellar-DataStore/Typescript-sdk.git"
+  "name": "stellards_typescript_sdk",
+  "version": "2.0.0",
+  "description": "Official JavaScript and TypeScript SDK for the StellarDS.io v2 API: Node.js, browsers, edge runtimes and a script-tag bundle.",
+  "author": "TMS Software",
+  "license": "Unlicense",
+  "homepage": "https://stellards.io",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stellar-datastore/Typescript-sdk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/stellar-datastore/Typescript-sdk/issues"
+  },
+  "keywords": [
+    "stellards",
+    "database",
+    "cloud",
+    "rest",
+    "sdk",
+    "typescript",
+    "javascript",
+    "webhooks"
+  ],
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "unpkg": "./dist/stellards.global.min.js",
+  "jsdelivr": "./dist/stellards.global.min.js",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     },
-    "keywords": [
-        "fetch",
-        "typescript",
-        "openapi-client",
-        "openapi-generator"
-    ],
-    "license": "Unlicense",
-    "main": "./dist/index.js",
-    "type": "commonjs",
-    "exports": {
-        ".": {
-            "require": "./dist/index.js",
-            "import": "./dist/index.js",
-            "types": "./dist/index.d.ts"
-        },
-        "./services/*": {
-            "require": "./dist/services/*.js",
-            "import": "./dist/services/*.js"
-        }
-    },
-    "files": [
-        "dist"
-    ],
-    "typings": "./dist/index.d.ts",
-    "scripts": {
-        "build": "tsc",
-        "prepare": "npm run build"
-    }
+    "./browser": "./dist/stellards.global.min.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run typecheck && npm test && npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^18.19.0",
+    "tsup": "^8.3.5",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.9"
+  }
 }
